@@ -14,7 +14,12 @@ config();    //process.env
 const app = exp()
 
 //use cors middleware
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'], credentials: true }))
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? true // Allows any origin in production for simplicity, or you can put your specific Vercel URL here
+    : ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true
+}))
 //add body parser middleware
 app.use(exp.json()) //req.body ????? what is exp.json()
 //cokiee parser
