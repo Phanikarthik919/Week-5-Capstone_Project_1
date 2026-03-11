@@ -1,7 +1,7 @@
 import exp from "express"; // exp is a function
 import cors from "cors";
-import {connect} from 'mongoose'
-import {config} from 'dotenv'
+import { connect } from 'mongoose'
+import { config } from 'dotenv'
 
 import { userRoute } from './APIs/UserAPI.js';
 import { adminRoute } from './APIs/AdminAPI.js';
@@ -14,45 +14,55 @@ config();    //process.env
 const app = exp()
 
 //use cors middleware
-app.use(cors({origin:['http://localhost:5173','http://localhost:5174'], credentials:true}))
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'], credentials: true }))
 //add body parser middleware
 app.use(exp.json()) //req.body ????? what is exp.json()
 //cokiee parser
 app.use(cookieParser());
 //connect to database
 //connect APIs
-app.use('/user-api',userRoute)
-app.use('/author-api',authorRoute)
-app.use('/admin-api',adminRoute)
-app.use("/common-api",commonRouter)
+app.use('/user-api', userRoute)
+app.use('/author-api', authorRoute)
+app.use('/admin-api', adminRoute)
+app.use("/common-api", commonRouter)
 
-const connectDB = async()=>{
-  try{
+const connectDB = async () => {
+  try {
     await connect(process.env.DB_URL)
-  console.log("DB connection success")
-  //start http server
-  app.listen(process.env.PORT,()=>console.log("server started"))
-  }catch(err){
+    console.log("DB connection success")
+    //start http server
+    app.listen(process.env.PORT, () => console.log("server started"))
+  } catch (err) {
     console.log("Err in DB connection", err)
   }
 }
 
-app.post('/logout',(req,res)=>{
+app.post('/logout', (req, res) => {
   //clear cookie named 'token'
-  res.clearCookie('token',{
-    httpOnly:true,
+  res.clearCookie('token', {
+    httpOnly: true,
     secure: false,
     sameSite: 'lax'
   });
 
-  res.status(200).json({message:"Logged out Successfully"});
+  res.status(200).json({ message: "Logged out Successfully" });
 })
 
-connectDB()
+// Export the app for Vercel
+export default app;
+
+if (process.env.NODE_ENV !== 'production') {
+  connectDB();
+} else {
+  // In production (Vercel), we just need to ensure DB is connected
+  connect(process.env.DB_URL)
+    .then(() => console.log("DB connection success (Production)"))
+    .catch(err => console.log("Err in DB connection", err));
+}
 
 //dealing with invalid path
-app.use((req,res,next)=>{
-  res.json({message:`${req.url} Invalid Path`})
+app.use((req, res, next) => {
+  res.json({ message: `${req.url} Invalid Path` })
 });
 //error handling middleware
 app.use((err, req, res, next) => {

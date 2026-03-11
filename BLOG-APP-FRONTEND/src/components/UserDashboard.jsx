@@ -16,7 +16,8 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/user-api/articles", { withCredentials: true });
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        const res = await axios.get(`${apiUrl}/user-api/articles`, { withCredentials: true });
         setArticles(res.data.payload);
       } catch (err) {
         console.log("Error fetching articles:", err);

@@ -23,7 +23,8 @@ const Register = () => {
 
       if (role === "user") {
         //make api request to user api
-        let res = await axios.post("http://localhost:4000/user-api/users", userObj);
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        let res = await axios.post(`${apiUrl}/user-api/users`, userObj);
         console.log("res obj is ", res);
         if (res.status === 201) {
           setLoading(false);
@@ -34,7 +35,8 @@ const Register = () => {
       }
       if (role === "author") {
         //make api request to author api
-        let res = await axios.post("http://localhost:4000/author-api/users", userObj);
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        let res = await axios.post(`${apiUrl}/author-api/users`, userObj);
         console.log("res obj is ", res);
         if (res.status === 201) {
           setLoading(false);

@@ -1,5 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../store/authStore';
 import {
   pageBackground, pageWrapper, pageTitleClass, bodyText, mutedText,
   cardClass, headingClass, primaryBtn, secondaryBtn, ghostBtn,
@@ -16,7 +18,8 @@ const AuthorDashboard = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/user-api/articles", { withCredentials: true });
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        const res = await axios.get(`${apiUrl}/user-api/articles`, { withCredentials: true });
         setArticles(res.data.payload);
       } catch (err) {
         console.log("Error fetching articles:", err);
