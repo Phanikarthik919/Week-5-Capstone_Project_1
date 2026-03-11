@@ -1,0 +1,139 @@
+#----------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------USER--------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------
+### User Register
+POST http://localhost:4000/user-api/users
+Content-Type: application/json
+
+{
+  "firstName": "phani",
+  "lastName": "User",
+  "email": "phani.author@example.com",
+  "password": "Author@12345",
+  "profileImageUrl": "https://example.com/avatars/author.png"
+}
+
+### User Login
+POST http://localhost:4000/common-api/login
+Content-Type: application/json
+
+{
+  "email":"phani.author@example.com",
+  "password":"Author@12345"
+}
+### User Reading articles
+
+GET http://localhost:4000/user-api/articles
+
+### comments added
+PUT http://localhost:4000/user-api/articles/comments
+Content-Type: application/json
+
+{
+  "user":"69ae86a9c3f2f8ff358a2205",
+  "articleId":"69ae8889aa79476e07acfff5",
+  "comment":"very helpful"
+}
+
+
+### Block user
+PUT http://localhost:4000/admin-api/block-user/698ab7185347ba9f939ac172
+
+### Unblock user
+PUT http://localhost:4000/admin-api/unblock-user/698ab7185347ba9f939ac172
+
+### change password
+PUT http://localhost:4000/common-api/change-password
+Content-Type: application/json
+
+{
+  "email":"phani.author@example.com",
+  "password":"phani@1234",
+  "new_password":"phanikarthik@1234"
+}
+
+### Logout
+POST http://localhost:4000/logout
+
+#----------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------AUTHOR------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------
+
+### create Author
+POST http://localhost:4000/author-api/users
+Content-Type: application/json
+
+{
+  "firstName": "abhi",
+  "lastName": "Author",
+  "email": "abhi.author@example.com",
+  "password": "Author@12345",
+  "profileImageUrl": "https://example.com/avatars/author.png"
+}
+
+### Author Login
+POST http://localhost:4000/common-api/login
+Content-Type: application/json
+
+{
+  "email":"abhi.author@example.com",
+  "password":"Author@12345"
+}
+
+### Create Article
+POST http://localhost:4000/author-api/articles
+Content-Type: application/json
+
+{
+  "author":"69ae8a59aa79476e07acfffd",
+  "title":"hyderabad",
+  "category":"geography",
+  "content": "hyderabad is a city in Telangana India , which has beautiful beaches and historical sites. It is also known as the technologically advanced city to India."
+}
+
+
+###
+#cookie is attached with request
+# if user is loogedin then it is an authenticated request
+# if not loggedin it is not authenticated request
+# a httpOnly cookie is not accessible by browser
+
+
+### Get the Article
+
+GET http://localhost:4000/author-api/articles/698ab9f6df8d8559c78d0853
+
+
+### Edit Article
+PUT http://localhost:4000/author-api/articles
+Content-Type: application/json
+
+{
+  "author":"698989f3f071237d0526a830",
+  "article_id":"69ae8719c3f2f8ff358a220c",
+  "title":"Wisdom",
+  "category":"geography",
+  "content":"he is a very good good boy"
+}
+
+//delete (Soft delete) article =>>  (making isactive:flase , not completely deleting from database)
+### soft Delete
+PUT http://localhost:4000/author-api/articles/deactivate
+Content-Type: application/json
+
+{
+  "author":"69ae86e7c3f2f8ff358a2208",
+  "article_id":"69ae8889aa79476e07acfff5",
+  "title":"bookkkk",
+  "category":"hisfbefhtory",
+  "content":"he is a aejfbkgood boy"
+}
+
+
+### logout
+GET http://localhost:4000/common-api/logout
+
+###
+GET http://localhost:4000/test
+
+
