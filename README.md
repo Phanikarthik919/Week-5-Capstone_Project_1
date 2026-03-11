@@ -2,7 +2,7 @@
 
 A comprehensive Blog Application built with the MERN stack (MongoDB, Express, React, Node.js) featuring role-based access control for Users, Authors, and Admins.
 
-## 🚀 Features
+## Features
 
 - **Authentication & Authorization**: Secure login and registration using JWT and Cookies.
 - **Role-Based Access Control (RBAC)**:
