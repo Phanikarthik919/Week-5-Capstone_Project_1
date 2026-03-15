@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../store/authStore';
+import Articles from './Articles';
 import {
-  pageBackground, pageWrapper, pageTitleClass, bodyText, mutedText,
-  cardClass, headingClass, primaryBtn, secondaryBtn, ghostBtn,
-  articleCardClass, articleTitle, articleMeta, articleGrid, divider, loadingClass
+  pageBackground, pageWrapper, pageTitleClass, bodyText,
+  primaryBtn, secondaryBtn
 } from '../styles/common';
 
 const AuthorDashboard = () => {
@@ -19,12 +19,21 @@ const AuthorDashboard = () => {
     navigate("/login");
   };
 
+  const handleEdit = (article) => {
+    console.log("Edit article:", article._id);
+    // navigate(`/edit-article/${article._id}`);
+  };
+
+  const handleDelete = (article) => {
+    console.log("Delete article:", article._id);
+    // handle delete logic
+  };
+
   // Fetch articles on mount
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-        // Fetching articles specifically for this author using their ID
         const res = await axios.get(`${apiUrl}/author-api/articles/${currentUser._id}`, { withCredentials: true });
         setArticles(res.data.payload);
       } catch (err) {
@@ -57,37 +66,14 @@ const AuthorDashboard = () => {
           </div>
         </div>
 
-        {loading ? (
-          <p className={loadingClass}>Loading your articles...</p>
-        ) : articles.length > 0 ? (
-          <div className={articleGrid}>
-            {articles.map((article) => (
-              <div key={article._id} className={articleCardClass}>
-                <div className="flex flex-col h-full">
-                  <div className="mb-auto">
-                    <span className="text-[0.6rem] font-bold text-[#0066cc] uppercase tracking-wider mb-2 block">{article.category}</span>
-                    <h2 className={articleTitle}>{article.title}</h2>
-                    <p className="text-xs text-[#a1a1a6] mt-1 mb-3">
-                      {new Date(article.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm text-[#6e6e73] line-clamp-3 leading-relaxed">
-                      {article.content}
-                    </p>
-                  </div>
-                  <div className="mt-6 flex gap-3">
-                    <button className="text-[0.7rem] font-semibold text-[#0066cc] hover:underline">Edit</button>
-                    <button className="text-[0.7rem] font-semibold text-[#ff3b30] hover:underline">Deactivate</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={cardClass + " text-center py-20"}>
-            <p className={mutedText}>You haven't published any articles yet.</p>
-            <Link to="/add-article" className={ghostBtn + " mt-4 inline-block"}>Create your first post</Link>
-          </div>
-        )}
+        <Articles
+          articles={articles}
+          loading={loading}
+          showActions={true}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          emptyMessage="You haven't published any articles yet."
+        />
       </div>
     </div>
   );
