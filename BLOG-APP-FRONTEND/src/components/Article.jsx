@@ -24,27 +24,25 @@ const Article = () => {
   const [commentText, setCommentText] = useState("");
   const [addingComment, setAddingComment] = useState(false);
 
-  // --- API CALL FOR DIRECT NAVIGATION ---
-  // If the user refreshed the page, 'state' from useLocation will be lost (null).
-  // In that case, we need to fetch the article from the backend using the articleId.
+  // --- ALWAYS FETCH LATEST DATA ---
+  // Even if we have 'state' from the previous page, we fetch the fresh 
+  // article from the backend so that all comments and nested user data are perfectly populated.
   useEffect(() => {
-    if (!state) {
-      const fetchArticle = async () => {
-        try {
-          const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-          const res = await axios.get(`${apiUrl}/user-api/articles/${articleId}`, { withCredentials: true });
-          setArticle(res.data.payload);
-        } catch (err) {
-          console.error("Error fetching article:", err);
-          setError("Failed to load article.");
-        } finally {
-          setLoading(false);
-        }
-      };
+    const fetchArticle = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        const res = await axios.get(`${apiUrl}/user-api/articles/${articleId}`, { withCredentials: true });
+        setArticle(res.data.payload);
+      } catch (err) {
+        console.error("Error fetching article:", err);
+        setError("Failed to load article.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchArticle();
-    }
-  }, [articleId, state]);
+    fetchArticle();
+  }, [articleId]);
 
   // --- ADD COMMENT LOGIC ---
   const handleAddComment = async (e) => {

@@ -28,7 +28,10 @@ userRoute.post('/users', async (req, res, next) => {
 userRoute.get("/articles", verifyToken("USER"), async (req, res, next) => {
     try {
         //read articles of all authors which are active
-        const articles = await ArticleModel.find({ isArticleActive: true }).populate("author", "firstName lastName email").sort({ createdAt: -1 });
+        const articles = await ArticleModel.find({ isArticleActive: true })
+            .populate("author", "firstName lastName email")
+            .populate("comments.user", "firstName lastName")
+            .sort({ createdAt: -1 });
         //send res
         res.status(200).json({ message: "all articles", payload: articles });
     } catch (err) {
