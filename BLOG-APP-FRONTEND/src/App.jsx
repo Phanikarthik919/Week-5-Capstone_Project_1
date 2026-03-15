@@ -8,6 +8,7 @@ import UserDashboard from './components/UserDashboard';
 import AuthorDashboard from './components/AuthorDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import Article from './components/Article';
+import EditArticle from './components/EditArticle';
 import { Toaster } from 'react-hot-toast';
 
 import Header from './components/Header';
@@ -28,6 +29,7 @@ function App() {
           <Route path="/author-dashboard" element={<AuthorDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/article/:articleId" element={<Article />} />
+          <Route path="/edit-article/:articleId" element={<EditArticle />} />
         </Routes>
       </div>
     </Router>

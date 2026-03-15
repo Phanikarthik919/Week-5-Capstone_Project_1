@@ -20,8 +20,7 @@ const AuthorDashboard = () => {
   };
 
   const handleEdit = (article) => {
-    console.log("Edit article:", article._id);
-    // navigate(`/edit-article/${article._id}`);
+    navigate(`/edit-article/${article._id}`);
   };
 
   const handleDelete = (article) => {
