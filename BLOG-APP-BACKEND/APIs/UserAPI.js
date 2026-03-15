@@ -10,13 +10,17 @@ import { verifyToken } from '../middlewares/verifyToken.js';
 config();
 
 //Register user
-userRoute.post('/users', async (req, res) => {
-    //get user obj from req
-    let userObj = req.body;
-    //call register
-    const newUserObj = await register({ ...userObj, role: "USER" });
-    //send response
-    res.status(201).json({ message: "user registered Successfully", payload: newUserObj });
+userRoute.post('/users', async (req, res, next) => {
+    try {
+        //get user obj from req
+        let userObj = req.body;
+        //call register
+        const newUserObj = await register({ ...userObj, role: "USER" });
+        //send response
+        res.status(201).json({ message: "user registered Successfully", payload: newUserObj });
+    } catch (err) {
+        next(err);
+    }
 })
 
 

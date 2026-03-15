@@ -33,48 +33,41 @@ app.use("/common-api", commonRouter)
 
 const connectDB = async () => {
   try {
-    await connect(process.env.DB_URL)
-    console.log("DB connection success")
-    //start http server
-    app.listen(process.env.PORT, () => console.log("server started"))
+    if (!process.env.DB_URL) {
+      console.error("DB_URL is missing in environment variables!");
+      return;
+    }
+    await connect(process.env.DB_URL);
+    console.log("DB connection success");
+    
+    // Only listen on a port in local development
+    if (process.env.NODE_ENV !== 'production') {
+      const port = process.env.PORT || 4000;
+      app.listen(port, () => console.log(`Server started on port ${port}`));
+    }
   } catch (err) {
-    console.log("Err in DB connection", err)
+    console.error("Critical: Err in DB connection", err);
   }
 }
-
-app.post('/logout', (req, res) => {
-  //clear cookie named 'token'
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax'
-  });
-
-  res.status(200).json({ message: "Logged out Successfully" });
-})
 
 // Export the app for Vercel
 export default app;
 
-if (process.env.NODE_ENV !== 'production') {
-  connectDB();
-} else {
-  // In production (Vercel), we just need to ensure DB is connected
-  connect(process.env.DB_URL)
-    .then(() => console.log("DB connection success (Production)"))
-    .catch(err => console.log("Err in DB connection", err));
-}
+// Initialize connection
+connectDB();
 
 //dealing with invalid path
 app.use((req, res, next) => {
-  res.json({ message: `${req.url} Invalid Path` })
+  res.status(404).json({ message: `${req.url} Invalid Path` })
 });
+
 //error handling middleware
 app.use((err, req, res, next) => {
-
-  console.log("Error name:", err.name);
-  console.log("Error code:", err.code);
-  console.log("Full error:", err);
+  console.error("--- SERVER ERROR ---");
+  console.error("Name:", err.name);
+  console.error("Message:", err.message);
+  if (err.stack) console.error("Stack:", err.stack);
+  console.error("---------------------");
 
   // mongoose validation error
   if (err.name === "ValidationError") {
@@ -88,7 +81,7 @@ app.use((err, req, res, next) => {
   if (err.name === "CastError") {
     return res.status(400).json({
       message: "error occurred",
-      error: err.message,
+      error: "Invalid ID format or resource not found",
     });
   }
 
@@ -114,7 +107,7 @@ app.use((err, req, res, next) => {
 
   // default server error
   res.status(500).json({
-    message: "error occurred",
-    error: "Server side error",
+    message: "Server side error",
+    error: err.message || "An unexpected error occurred",
   });
 });
