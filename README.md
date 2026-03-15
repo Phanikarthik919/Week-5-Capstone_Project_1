@@ -1,6 +1,7 @@
 # Blog App - Capstone Project
 
-**Live Demo:** [https://week-5-capstone-project-1.vercel.app/](https://week-5-capstone-project-1.vercel.app/)
+**Live Demo:** [https://week-5-capstone-project-1.vercel.app/](https://week-5-capstone-project-1.vercel.app/)  
+**Backend API:** [https://blog-app-api-peach-gamma.vercel.app](https://blog-app-api-peach-gamma.vercel.app)
 
 A comprehensive Blog Application built with the MERN stack (MongoDB, Express, React, Node.js) featuring role-based access control for Users, Authors, and Admins.
 
