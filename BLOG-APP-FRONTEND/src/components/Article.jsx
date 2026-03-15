@@ -19,12 +19,10 @@ const Article = ({ article, showActions = false, onEdit, onDelete, onReadMore })
           </div>
         </div>
         
-        <div className="flex gap-2 mt-4">
-          {!showActions && (
-            <button onClick={() => onReadMore?.(article)} className={ghostBtn}>
-              Read More
-            </button>
-          )}
+        <div className="flex gap-4 mt-4 items-center">
+          <button onClick={() => onReadMore?.(article)} className={ghostBtn}>
+            Read More
+          </button>
           
           {showActions && (
             <>

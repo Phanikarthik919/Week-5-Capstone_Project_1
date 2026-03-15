@@ -76,6 +76,7 @@ const AdminDashboard = () => {
             showActions={true}
             onEdit={(a) => console.log("Mod edit:", a._id)}
             onDelete={(a) => console.log("Mod delete:", a._id)}
+            onReadMore={(a) => navigate(`/article/${a._id}`, { state: a })}
           />
         </div>
       </div>

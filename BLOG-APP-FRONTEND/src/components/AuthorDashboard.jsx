@@ -29,6 +29,10 @@ const AuthorDashboard = () => {
     // handle delete logic
   };
 
+  const handleReadMore = (article) => {
+    navigate(`/article/${article._id}`, { state: article });
+  };
+
   // Fetch articles on mount
   useEffect(() => {
     const fetchArticles = async () => {
@@ -72,6 +76,7 @@ const AuthorDashboard = () => {
           showActions={true}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onReadMore={handleReadMore}
           emptyMessage="You haven't published any articles yet."
         />
       </div>

@@ -42,7 +42,7 @@ const UserDashboard = () => {
 
   const handleReadMore = (article) => {
     console.log("Read more:", article._id);
-    // navigate(`/article/${article._id}`);
+    navigate(`/article/${article._id}`, { state: article });
   };
 
   if (!currentUser) {
