@@ -1,5 +1,5 @@
 import React from 'react';
-import Article from './Article';
+import ArticleCard from './ArticleCard';
 import { articleGrid, loadingClass, emptyStateClass } from '../styles/common';
 
 const Articles = ({
@@ -22,7 +22,7 @@ const Articles = ({
   return (
     <div className={articleGrid}>
       {articles.map((article) => (
-        <Article
+        <ArticleCard
           key={article._id || article.id}
           article={article}
           showActions={showActions}
