@@ -1,123 +1,199 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../store/authStore';
+import {
+  pageBackground, pageWrapper, pageTitleClass, mutedText,
+  headingClass, primaryBtn, ghostBtn, divider, 
+  formGroup, labelClass, inputClass
+} from '../styles/common';
 import toast from 'react-hot-toast';
 
 const Article = () => {
-  const { state } = useLocation(); // Get article from the Read More click
+  const { state } = useLocation(); // Gets data passed from the "Read More" button
+  const { articleId } = useParams(); // Gets the ID directly from the URL (e.g., /article/123)
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   // Basic component state
-  const [article, setArticle] = useState(state);
+  const [article, setArticle] = useState(state || null);
+  const [loading, setLoading] = useState(!state); // Only show loading if we didn't get state
+  const [error, setError] = useState(null);
+  
+  // Comment state
   const [commentText, setCommentText] = useState("");
+  const [addingComment, setAddingComment] = useState(false);
 
-  // Function to add a comment
-  const handleAddComment = async (event) => {
-    event.preventDefault(); // Prevent page reload
+  // --- API CALL FOR DIRECT NAVIGATION ---
+  // If the user refreshed the page, 'state' from useLocation will be lost (null).
+  // In that case, we need to fetch the article from the backend using the articleId.
+  useEffect(() => {
+    if (!state) {
+      const fetchArticle = async () => {
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+          const res = await axios.get(`${apiUrl}/user-api/articles/${articleId}`, { withCredentials: true });
+          setArticle(res.data.payload);
+        } catch (err) {
+          console.error("Error fetching article:", err);
+          setError("Failed to load article.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchArticle();
+    }
+  }, [articleId, state]);
+
+  // --- ADD COMMENT LOGIC ---
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
 
     try {
+      setAddingComment(true);
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-
-      const res = await axios.put(`${apiUrl}/user-api/articles/comments`, {
-        user: currentUser.userId || currentUser._id,
+      const payload = {
+        user: currentUser?.userId || currentUser?._id, 
         articleId: article._id,
         comment: commentText
-      }, { withCredentials: true });
-
-      // Update the screen with the new comment data from backend
+      };
+      
+      const res = await axios.put(`${apiUrl}/user-api/articles/comments`, payload, { withCredentials: true });
+      
+      // Update local article state with the new comment array from backend
       setArticle(res.data.payload);
-      setCommentText(""); // clear input box
-      toast.success("Comment added!");
+      setCommentText(""); // Clear the input
+      toast.success("Comment added successfully!");
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to add comment.");
+      console.error("Error adding comment:", err);
+      toast.error(err.response?.data?.message || "Failed to add comment.");
+    } finally {
+      setAddingComment(false);
     }
   };
 
-  // If there's no article data, just go back
-  if (!article) {
+  // 1. Show a loading screen while fetching
+  if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Article not found</h2>
-        <button onClick={() => navigate(-1)}>Go Back</button>
+      <div className={pageBackground}>
+        <div className={pageWrapper + " text-center"}>
+          <p className="text-[#0066cc]/60 animate-pulse">Loading article...</p>
+        </div>
       </div>
     );
   }
 
-  // Get author name safely
-  const authorName = typeof article.author === 'object'
-    ? article.author.firstName
+  // 2. Show an error screen if fetching failed or no article exists
+  if (error || !article) {
+    return (
+      <div className={pageBackground}>
+        <div className={pageWrapper + " text-center"}>
+          <p className="text-[#cc2f26]">{error || "Article not found."}</p>
+          <button onClick={() => navigate(-1)} className={ghostBtn + " mt-4"}>&larr; Go Back</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Safely grab the author's name
+  const authorName = typeof article.author === 'object' 
+    ? article.author.firstName 
     : "Author";
 
   return (
-    <div style={{ maxWidth: '800px', margin: '40px auto', padding: '20px', backgroundColor: '#fff', borderRadius: '10px' }}>
-
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        style={{ marginBottom: '20px', cursor: 'pointer' }}
-      >
-        Go Back
-      </button>
-
-      {/* --- 1. Article Display Section --- */}
-      <div>
-        <p style={{ color: 'blue', fontWeight: 'bold' }}>Category: {article.category}</p>
-        <h1 style={{ fontSize: '2em' }}>{article.title}</h1>
-
-        <div style={{ color: 'gray', marginBottom: '20px' }}>
-          <p>By {authorName}</p>
-          <p>Published: {new Date(article.createdAt).toLocaleString()}</p>
+    <div className={pageBackground}>
+      <div className={pageWrapper}>
+        
+        {/* Back Button */}
+        <button onClick={() => navigate(-1)} className={ghostBtn + " mb-8 flex items-center gap-2"}>
+          &larr; Back to Dashboard
+        </button>
+        
+        {/* --- ARTICLE HEADER SECTION --- */}
+        <div className="mb-10">
+          <span className="text-sm font-bold text-[#0066cc] uppercase tracking-wider mb-3 block">
+            {article.category}
+          </span>
+          <h1 className={pageTitleClass + " mb-4"}>{article.title}</h1>
+          
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#a1a1a6] text-sm mt-4">
+            <p>By <span className="font-semibold text-[#1d1d1f]">{authorName}</span></p>
+            <p>&bull;</p>
+            <p>Published: {new Date(article.createdAt).toLocaleString()}</p>
+            
+            {article.updatedAt && article.updatedAt !== article.createdAt && (
+              <>
+                <p>&bull;</p>
+                <p>Modified: {new Date(article.updatedAt).toLocaleString()}</p>
+              </>
+            )}
+          </div>
         </div>
 
-        <p style={{ fontSize: '1.2em', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-          {article.content}
-        </p>
-      </div>
+        {/* --- ARTICLE CONTENT SECTION --- */}
+        <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-[#e8e8ed] mb-12">
+          <p className="text-[#1d1d1f] text-lg leading-[1.8] whitespace-pre-wrap">
+            {article.content}
+          </p>
+        </div>
 
-      <hr style={{ margin: '40px 0' }} />
+        <div className={divider}></div>
 
-      {/* --- 2. Add Comment Section --- */}
-      <div>
-        <h3>Comments</h3>
-
-        {/* Only show Add Comment box if the logged in person is a USER */}
-        {currentUser && currentUser.role === "USER" && (
-          <form onSubmit={handleAddComment} style={{ marginBottom: '30px', padding: '15px', backgroundColor: '#f9f9f9' }}>
-            <label>Add a comment:</label>
-            <br />
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              required
-              rows="3"
-              style={{ width: '100%', margin: '10px 0' }}
-            />
-            <br />
-            <button type="submit" style={{ padding: '8px 16px', backgroundColor: 'blue', color: 'white' }}>
-              Post Comment
-            </button>
-          </form>
-        )}
-
-        {/* --- 3. Displaying the Comments List --- */}
-        <div>
-          {(!article.comments || article.comments.length === 0) ? (
-            <p>No comments yet.</p>
-          ) : (
-            article.comments.map((comment, index) => (
-              <div key={index} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-                <p><strong>{comment.username || "User"}</strong></p>
-                <p>{comment.comment}</p>
+        {/* --- COMMENTS SECTION --- */}
+        <div className="max-w-3xl">
+          <h2 className={headingClass + " mb-8"}>Comments ({article.comments?.length || 0})</h2>
+          
+          {/* Add Comment Form (Only for USER role) */}
+          {currentUser && currentUser.role === "USER" && (
+            <form onSubmit={handleAddComment} className="mb-10 bg-[#f5f5f7] p-6 rounded-2xl">
+              <div className={formGroup + " mb-3"}>
+                <label className={labelClass}>Add a comment</label>
+                <textarea 
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  className={inputClass + " resize-none h-24"}
+                  placeholder="Share your thoughts..."
+                  required
+                />
               </div>
-            ))
+              <div className="flex justify-end">
+                <button 
+                  type="submit" 
+                  disabled={addingComment || !commentText.trim()}
+                  className={primaryBtn + (addingComment ? " opacity-70" : "")}
+                >
+                  {addingComment ? "Posting..." : "Post Comment"}
+                </button>
+              </div>
+            </form>
           )}
+
+          {/* Comments List */}
+          <div className="space-y-6">
+            {!article.comments || article.comments.length === 0 ? (
+              <p className={mutedText}>No comments yet. Be the first to share your thoughts!</p>
+            ) : (
+              article.comments.map((comment, index) => (
+                <div key={index} className="flex gap-4 p-5 rounded-2xl border border-[#e8e8ed] bg-white">
+                  <div className="w-10 h-10 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center font-bold text-lg shrink-0">
+                    {comment.username ? comment.username[0].toUpperCase() : "U"}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[#1d1d1f] mb-1">
+                      {comment.username || "User"}
+                    </p>
+                    <p className="text-[#424245] text-sm leading-relaxed whitespace-pre-wrap">
+                      {comment.comment}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
-
       </div>
-
     </div>
   );
 };
