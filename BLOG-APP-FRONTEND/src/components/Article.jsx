@@ -175,21 +175,27 @@ const Article = () => {
             {!article.comments || article.comments.length === 0 ? (
               <p className={mutedText}>No comments yet. Be the first to share your thoughts!</p>
             ) : (
-              article.comments.map((comment, index) => (
-                <div key={index} className="flex gap-4 p-5 rounded-2xl border border-[#e8e8ed] bg-white">
-                  <div className="w-10 h-10 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center font-bold text-lg shrink-0">
-                    {comment.username ? comment.username[0].toUpperCase() : "U"}
+              article.comments.map((comment, index) => {
+                const commenterName = comment.user && comment.user.firstName 
+                  ? comment.user.firstName 
+                  : "User";
+
+                return (
+                  <div key={index} className="flex gap-4 p-5 rounded-2xl border border-[#e8e8ed] bg-white">
+                    <div className="w-10 h-10 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center font-bold text-lg shrink-0">
+                      {commenterName[0].toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-[#1d1d1f] mb-1">
+                        {commenterName}
+                      </p>
+                      <p className="text-[#424245] text-sm leading-relaxed whitespace-pre-wrap">
+                        {comment.comment}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-[#1d1d1f] mb-1">
-                      {comment.username || "User"}
-                    </p>
-                    <p className="text-[#424245] text-sm leading-relaxed whitespace-pre-wrap">
-                      {comment.comment}
-                    </p>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
