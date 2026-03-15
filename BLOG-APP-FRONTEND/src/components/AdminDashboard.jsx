@@ -1,10 +1,19 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../store/authStore';
 import {
   pageBackground, pageWrapper, pageTitleClass, bodyText, mutedText,
   cardClass, headingClass, primaryBtn, secondaryBtn, divider
 } from '../styles/common';
 
 const AdminDashboard = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const onLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <div className={pageBackground}>
       <div className={pageWrapper}>
@@ -14,7 +23,10 @@ const AdminDashboard = () => {
             <h1 className={pageTitleClass}>Admin Panel</h1>
             <p className={bodyText + " mt-2"}>Managing 342 users · 18 pending</p>
           </div>
-          <button className={primaryBtn}>Send Announcement</button>
+          <div className="flex gap-4">
+            <button className={primaryBtn}>Send Announcement</button>
+            <button onClick={onLogout} className={secondaryBtn}>Logout</button>
+          </div>
         </div>
 
         {/* Stats */}

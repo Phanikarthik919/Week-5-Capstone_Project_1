@@ -9,10 +9,15 @@ import {
 } from '../styles/common';
 
 const AuthorDashboard = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const onLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   // Fetch articles on mount
   useEffect(() => {
@@ -42,9 +47,14 @@ const AuthorDashboard = () => {
             <h1 className={pageTitleClass}>My Dashboard</h1>
             <p className={bodyText}>Welcome back, {currentUser?.firstName || 'Author'}. Here are your latest publications.</p>
           </div>
-          <Link to="/add-article" className={primaryBtn}>
-            Write New Article
-          </Link>
+          <div className="flex gap-4">
+            <Link to="/add-article" className={primaryBtn}>
+              Write New Article
+            </Link>
+            <button onClick={onLogout} className={secondaryBtn}>
+              Logout
+            </button>
+          </div>
         </div>
 
         {loading ? (
