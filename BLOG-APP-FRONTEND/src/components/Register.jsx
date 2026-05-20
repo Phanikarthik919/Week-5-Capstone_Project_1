@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,18 +13,32 @@ const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const onUserRegister = async (newUser) => {
     console.log(newUser);
     setLoading(true);
+    // Create form data object
+    const formData = new FormData();
+    //get user object
+    let { role, profileImageUrl, ...userObj } = newUser;
+    //add all fields except profileImageUrl to FormData object
+    Object.keys(userObj).forEach((key) => {
+      formData.append(key, userObj[key]);
+    });
+    // add profileImageUrl to FormData only if a file was selected
+    if (profileImageUrl && profileImageUrl[0]) {
+      formData.append("profileImageUrl", profileImageUrl[0]);
+    }
     setError(null);
     try {
-      let { role, ...userObj } = newUser;
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
       if (role === "user") {
-        //make api request to user api
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-        let res = await axios.post(`${apiUrl}/user-api/users`, userObj);
+        //make req to user api
+        let res = await axios.post(`${apiUrl}/user-api/users`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log("res obj is ", res);
         if (res.status === 201) {
           setLoading(false);
@@ -34,9 +48,10 @@ const Register = () => {
         }
       }
       if (role === "author") {
-        //make api request to author api
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-        let res = await axios.post(`${apiUrl}/author-api/users`, userObj);
+        //make req to author api
+        let res = await axios.post(`${apiUrl}/author-api/users`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log("res obj is ", res);
         if (res.status === 201) {
           setLoading(false);
@@ -52,7 +67,15 @@ const Register = () => {
       toast.error(errMsg);
       setLoading(false);
     }
-  }
+  };
+  //clean up function for preview image from browser memory
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
 
   return (
@@ -132,15 +155,43 @@ const Register = () => {
             {errors.password && <p className="text-[#cc2f26] text-xs mt-1">{errors.password.message}</p>}
           </div>
 
-          {/* Profile Image URL */}
+          {/* Profile Image */}
           <div className={formGroup}>
-            <label className={labelClass}>Profile Image URL</label>
+            <label className={labelClass}>Profile Image</label>
             <input
-              {...register('profileImageUrl')}
-              type="text"
-              placeholder="https://example.com/photo.jpg"
+              type="file"
+              accept="image/png, image/jpeg"
+              {...register("profileImageUrl")}
               className={inputClass}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                // validation for image format
+                if (file) {
+                  if (!["image/jpeg", "image/png"].includes(file.type)) {
+                    setError("Only JPG or PNG allowed");
+                    return;
+                  }
+                  //validation for file size
+                  if (file.size > 2 * 1024 * 1024) {
+                    setError("File size must be less than 2MB");
+                    return;
+                  }
+                  //Converts file → temporary browser URL(create preview URL)
+                  const previewUrl = URL.createObjectURL(file);
+                  setPreview(previewUrl);
+                  setError(null);
+                }
+              }}
             />
+            {preview && (
+              <div className="mt-3 flex justify-center">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-24 h-24 object-cover rounded-full border"
+                />
+              </div>
+            )}
           </div>
 
           <button type="submit" className={submitBtn} disabled={loading}>

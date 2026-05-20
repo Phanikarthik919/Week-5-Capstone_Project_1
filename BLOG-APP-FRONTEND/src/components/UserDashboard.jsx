@@ -62,13 +62,22 @@ const UserDashboard = () => {
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className={pageTitleClass}>
-              👋 Welcome, <span className="text-[#0066cc]">{currentUser?.firstName}</span>
+            👋 Welcome, <span className="text-[#0066cc]">{currentUser?.firstName}</span>
             </h1>
             <p className={bodyText + " mt-2"}>Explore the latest publications from our authors.</p>
           </div>
-          <button onClick={onLogout} className={secondaryBtn}>
-            Logout
-          </button>
+          <div className="flex items-center gap-4">
+            {currentUser?.profileImageUrl && (
+              <img 
+                src={currentUser.profileImageUrl} 
+                alt="Profile" 
+                className="w-10 h-10 rounded-full object-cover shadow-sm"
+              />
+            )}
+            <button onClick={onLogout} className={secondaryBtn}>
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Articles Grid */}

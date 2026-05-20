@@ -4,7 +4,7 @@ import {
   tagClass, ghostBtn, primaryBtn, secondaryBtn 
 } from '../styles/common';
 
-const ArticleCard = ({ article, showActions = false, onEdit, onDelete, onReadMore }) => {
+const ArticleCard = ({ article, showActions = false, onEdit, onDelete, onActivate, onReadMore }) => {
   return (
     <div className={articleCardClass}>
       <div className="flex flex-col h-full">
@@ -24,21 +24,30 @@ const ArticleCard = ({ article, showActions = false, onEdit, onDelete, onReadMor
             Read More
           </button>
           
-          {showActions && (
+          {showActions && article.isArticleActive && (
             <>
               <button 
                 onClick={() => onEdit?.(article)} 
-                className="text-[0.7rem] font-semibold text-[#0066cc] hover:underline"
+                className={ghostBtn + " !text-xs !px-0"}
               >
                 Edit
               </button>
               <button 
                 onClick={() => onDelete?.(article)} 
-                className="text-[0.7rem] font-semibold text-[#ff3b30] hover:underline"
+                className="text-[#ff3b30] font-medium text-xs hover:underline transition-all"
               >
                 Deactivate
               </button>
             </>
+          )}
+
+          {showActions && !article.isArticleActive && (
+            <button 
+              onClick={() => onActivate?.(article)} 
+              className="text-[#34c759] font-medium text-xs hover:underline transition-all"
+            >
+              Activate
+            </button>
           )}
         </div>
       </div>

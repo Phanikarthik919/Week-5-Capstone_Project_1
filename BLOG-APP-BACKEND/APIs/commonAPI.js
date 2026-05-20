@@ -59,3 +59,11 @@ commonRouter.put("/change-password", verifyToken(), async (req, res) => {
   //send res
   res.status(200).json({ message: "Password Updated Successfully" })
 })
+
+//page refresh handling
+commonRouter.get("/check-auth", verifyToken("USER", "AUTHOR", "ADMIN"), (req, res) => {
+  res.status(200).json({
+    message: "autheneticated",
+    payload: req.user
+  });
+});

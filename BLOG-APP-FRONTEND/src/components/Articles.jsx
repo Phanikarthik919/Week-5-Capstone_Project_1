@@ -8,6 +8,7 @@ const Articles = ({
   showActions = false,
   onEdit,
   onDelete,
+  onActivate,
   onReadMore,
   emptyMessage = "No articles found."
 }) => {
@@ -28,6 +29,7 @@ const Articles = ({
           showActions={showActions}
           onEdit={onEdit}
           onDelete={onDelete}
+          onActivate={onActivate}
           onReadMore={onReadMore}
         />
       ))}

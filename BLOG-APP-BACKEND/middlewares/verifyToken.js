@@ -15,8 +15,16 @@ export const verifyToken = (...allowedRoles) => {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
       // Check if role is allowed
-      if (!allowedRoles.includes(decodedToken.role)) {
-        return res.status(403).json({ message: "Forbidden. You don't have permission" });
+      console.log("verifyToken - Decoded Role:", decodedToken.role);
+      console.log("verifyToken - Allowed Roles:", allowedRoles);
+      
+      if (allowedRoles.length > 0 && !allowedRoles.includes(decodedToken.role)) {
+        console.log("verifyToken - Access Denied for role:", decodedToken.role);
+        return res.status(403).json({ 
+          message: "Forbidden. You don't have permission", 
+          userRole: decodedToken.role, 
+          allowedRoles: allowedRoles 
+        });
       }
 
       // Attach user info to req for use in routes

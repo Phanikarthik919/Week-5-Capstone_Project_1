@@ -24,17 +24,20 @@ export const register = async (userObj) => {
 
 //authenticate function
 export const authenticate = async ({ email, password }) => {
+    const normalizedEmail = email.toLowerCase().trim();
+    console.log("Authenticating email:", normalizedEmail);
     //check user with email & role
-  const user = await UserTypeModel.findOne({ email });
+  const user = await UserTypeModel.findOne({ email: normalizedEmail });
   if (!user) {
+    console.log("User not found in DB for email:", normalizedEmail);
     const err = new Error("Invalid email");
     err.status = 401;
     throw err;
   }
-  //if user valid ,but blocked by admin
-
+  
   //compare passwords
   const isMatch = await bcrypt.compare(password, user.password);
+  console.log("Password match result:", isMatch);
   if (!isMatch) {
     const err = new Error("Invalid password");
     err.status = 401;
@@ -49,7 +52,7 @@ export const authenticate = async ({ email, password }) => {
 
   //generate token
   const token = jwt.sign({ userId: user._id, 
-    role: user.role, email: user.email }, 
+    role: user.role, email: user.email ,firstName:user.firstName , lastName:user.lastName,profileImageUrl:user.profileImageUrl}, 
     process.env.JWT_SECRET, {
     expiresIn: "1h",
   });

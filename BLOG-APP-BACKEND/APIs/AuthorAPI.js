@@ -5,21 +5,31 @@ import { UserTypeModel } from '../models/UserModel.js';
 import { config } from 'dotenv'
 import { checkAuthor } from '../middlewares/checkAuthor.js';
 import { verifyToken } from '../middlewares/verifyToken.js';
+import upload from '../Config/multer.js';
+import { uploadToCloudinary } from '../Config/clodinaryUpload.js';
+import cloudinary from '../Config/cloudinary.js';
 
 config();
 
 export const authorRoute = exp.Router();
 
 //Register author (public)
-authorRoute.post('/users', async (req, res, next) => {
+authorRoute.post('/users', upload.single('profileImageUrl'), async (req, res, next) => {
+  let cloudinaryResult;
   try {
-    //get user obj from req
     let userObj = req.body;
-    //call register
+    // Upload image if provided
+    if (req.file) {
+      cloudinaryResult = await uploadToCloudinary(req.file.buffer);
+      userObj.profileImageUrl = cloudinaryResult.secure_url;
+    }
     const newUserObj = await register({ ...userObj, role: "AUTHOR" });
-    //send response
     res.status(201).json({ message: "author created Successfully", payload: newUserObj });
   } catch (err) {
+    // Rollback cloudinary upload if DB save failed
+    if (cloudinaryResult?.public_id) {
+      await cloudinary.uploader.destroy(cloudinaryResult.public_id);
+    }
     next(err);
   }
 })
@@ -47,9 +57,9 @@ authorRoute.get("/articles/:authorId", verifyToken("AUTHOR"), checkAuthor, async
     //get author id
     let aid = req.params.authorId;
     //read articles by this author
-    let articleInfo = await ArticleModel.find({ author: aid, isArticleActive: true })
+    let articleInfo = await ArticleModel.find({ author: aid })
       .populate("author", "firstName email")
-      .populate("comments.user", "firstName lastName");
+      .populate("comments.user", "firstName lastName profileImageUrl");
     //send res
     res.status(201).json({ message: "Article found successfully", payload: articleInfo });
   } catch (err) {
@@ -60,10 +70,10 @@ authorRoute.get("/articles/:authorId", verifyToken("AUTHOR"), checkAuthor, async
 authorRoute.put("/articles/", verifyToken("AUTHOR"), checkAuthor, async (req, res, next) => { //role should be assigned by backend(server)
   try {
     let { articleId, title, category, content, author } = req.body;
-    //find article
-    let articleofDB = await ArticleModel.findOne({ _id: articleId, author: author });
+    //find article and ensure it is active
+    let articleofDB = await ArticleModel.findOne({ _id: articleId, author: author, isArticleActive: true });
     if (!articleofDB) {
-      return res.status(404).json({ message: "Article not found" });
+      return res.status(404).json({ message: "Article not found or is deactivated" });
     }
     const updatedArticle = await ArticleModel.findByIdAndUpdate(articleId, { $set: { title, category, content } }, { new: true });
     //send res
@@ -90,6 +100,23 @@ authorRoute.put("/articles/deactivate", verifyToken("AUTHOR"), checkAuthor, asyn
       { new: true })
     //send res
     res.status(201).json({ message: "Article Decativated successfully", payload: updatedArticle });
+  } catch (err) {
+    next(err);
+  }
+})
+
+//activate article (protected route)
+authorRoute.put("/articles/activate", verifyToken("AUTHOR"), checkAuthor, async (req, res, next) => {
+  try {
+    let { author, article_id } = req.body;
+    let articleOfDB = await ArticleModel.findOne({ _id: article_id, author: author });
+    if (!articleOfDB) {
+      return res.status(401).json({ message: "Article not found" });
+    }
+    let updatedArticle = await ArticleModel.findByIdAndUpdate(article_id,
+      { $set: { isArticleActive: true } },
+      { new: true })
+    res.status(200).json({ message: "Article Activated successfully", payload: updatedArticle });
   } catch (err) {
     next(err);
   }

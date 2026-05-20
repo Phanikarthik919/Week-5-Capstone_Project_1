@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const useAuth = create((set) => ({
   currentUser: null,
-  loading: false,
+  loading: true,
   isAuthenticated: false,
   error: null,
 
@@ -58,6 +58,35 @@ export const useAuth = create((set) => ({
         currentUser: null,
         error: error.response?.data?.error || "Logout failed",
       });
+    }
+  },
+
+  // restore login
+  checkAuth: async () => {
+    try {
+      set({ loading: true });
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+      const res = await axios.get(`${apiUrl}/common-api/check-auth`, { withCredentials: true });
+
+      set({
+        currentUser: res.data.payload,
+        isAuthenticated: true,
+        loading: false,
+      });
+    } catch (err) {
+      // If user is not logged in → do nothing
+      if (err.response?.status === 401) {
+        set({
+          currentUser: null,
+          isAuthenticated: false,
+          loading: false,
+        });
+        return;
+      }
+
+      // other errors
+      console.error("Auth check failed:", err);
+      set({ loading: false });
     }
   }
 }));

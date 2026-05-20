@@ -38,13 +38,11 @@ function Login() {
 
   // Form submit handler
   const onUserLogin = async (userCredObj) => {
-    const promise = login(userCredObj);
-    toast.promise(promise, {
+    await toast.promise(login(userCredObj), {
       loading: 'Signing in...',
-      success: (data) => `Welcome back!`,
-      error: (err) => `Login failed: ${err}`
+      success: () => `Welcome back!`,
+      error: (err) => `Login failed: ${err?.message || err}`,
     });
-    await promise;
   };
 
   return (

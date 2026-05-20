@@ -2,7 +2,7 @@
 #----------------------------------------------------USER--------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------
 ### User Register
-POST http://localhost:4000/user-api/users
+POST http://localhost:5005/user-api/users
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### User Login
-POST http://localhost:4000/common-api/login
+POST http://localhost:5005/common-api/login
 Content-Type: application/json
 
 {
@@ -23,10 +23,10 @@ Content-Type: application/json
 }
 ### User Reading articles
 
-GET http://localhost:4000/user-api/articles
+GET http://localhost:5005/user-api/articles
 
 ### comments added
-PUT http://localhost:4000/user-api/articles/comments
+PUT http://localhost:5005/user-api/articles/comments
 Content-Type: application/json
 
 {
@@ -37,13 +37,13 @@ Content-Type: application/json
 
 
 ### Block user
-PUT http://localhost:4000/admin-api/block-user/698ab7185347ba9f939ac172
+PUT http://localhost:5005/admin-api/block-user/698ab7185347ba9f939ac172
 
 ### Unblock user
-PUT http://localhost:4000/admin-api/unblock-user/698ab7185347ba9f939ac172
+PUT http://localhost:5005/admin-api/unblock-user/698ab7185347ba9f939ac172
 
 ### change password
-PUT http://localhost:4000/common-api/change-password
+PUT http://localhost:5005/common-api/change-password
 Content-Type: application/json
 
 {
@@ -53,14 +53,14 @@ Content-Type: application/json
 }
 
 ### Logout
-POST http://localhost:4000/logout
+POST http://localhost:5005/logout
 
 #----------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------AUTHOR------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------
 
 ### create Author
-POST http://localhost:4000/author-api/users
+POST http://localhost:5005/author-api/users
 Content-Type: application/json
 
 {
@@ -73,7 +73,7 @@ Content-Type: application/json
 
 ### Author Login
 
-POST http://localhost:4000/common-api/login
+POST http://localhost:5005/common-api/login
 Content-Type: application/json
 
 {
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
 
 ### Create Article
-POST http://localhost:4000/author-api/articles
+POST http://localhost:5005/author-api/articles
 Content-Type: application/json
 
 {
@@ -102,11 +102,11 @@ Content-Type: application/json
 
 ### Get the Article
 
-GET http://localhost:4000/author-api/articles/698ab9f6df8d8559c78d0853
+GET http://localhost:5005/author-api/articles/698ab9f6df8d8559c78d0853
 
 
 ### Edit Article
-PUT http://localhost:4000/author-api/articles
+PUT http://localhost:5005/author-api/articles
 Content-Type: application/json
 
 {
@@ -119,7 +119,7 @@ Content-Type: application/json
 
 //delete (Soft delete) article =>>  (making isactive:flase , not completely deleting from database)
 ### soft Delete
-PUT http://localhost:4000/author-api/articles/deactivate
+PUT http://localhost:5005/author-api/articles/deactivate
 Content-Type: application/json
 
 {
@@ -131,10 +131,31 @@ Content-Type: application/json
 }
 
 
+### activate article
+PUT http://localhost:5005/author-api/articles/activate
+Content-Type: application/json
+
+{
+  "author":"69ae86e7c3f2f8ff358a2208",
+  "article_id":"69ae8889aa79476e07acfff5"
+}
+
+
+### Author comments added
+PUT http://localhost:5005/user-api/articles/comments
+Content-Type: application/json
+
+{
+  "user":"69ae8a59aa79476e07acfffd",
+  "articleId":"69ae8889aa79476e07acfff5",
+  "comment":"Great article, very informative!"
+}
+
+
 ### logout
-GET http://localhost:4000/common-api/logout
+GET http://localhost:5005/common-api/logout
 
 ###
-GET http://localhost:4000/test
+GET http://localhost:5005/test
 
 
