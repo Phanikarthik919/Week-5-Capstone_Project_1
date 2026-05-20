@@ -6,46 +6,46 @@
 
 ---
 
-## 📋 Table of Contents
-- [📖 About the Project](#-about-the-project)
-- [✨ Features List](#-features-list)
-- [🖼️ Project Screenshots](#-project-screenshots)
-- [💻 Tech Stack & Ecosystem](#-tech-stack--ecosystem)
-- [🚀 Local Setup (The 5-Minute Guide)](#-local-setup-the-5-minute-guide)
-- [☁️ Cloud Production Guide (Deployment)](#️-cloud-production-guide-deployment)
-- [👤 Author Information](#-author-information)
+## Table of Contents
+- [ About the Project](#-about-the-project)
+- [ Features List](#-features-list)
+- [ Project Screenshots](#-project-screenshots)
+- [ Tech Stack & Ecosystem](#-tech-stack--ecosystem)
+- [ Local Setup (The 5-Minute Guide)](#-local-setup-the-5-minute-guide)
+- [ Cloud Production Guide (Deployment)](#-cloud-production-guide-deployment)
+- [ Author Information](#-author-information)
 
 ---
 
-## 📖 About the Project
+## About the Project
 
 **The Problem Statement:** Modern communities need a platform where content creators (authors) can share their thoughts while administrators ensure the quality of content, and readers can consume and interact with the articles securely.
 
 **The Solution:** This Blog App provides a role-based ecosystem where Authors can create and manage their own articles, Users can read and comment on global articles, and Admins can oversee the platform.
 
 **Live Production URLs:**
-- **[🚀 Live Web Application (Frontend)](https://week-5-capstone-project-1.vercel.app/)**
-- **[🖥️ Hosted API Server (Backend)](https://blog-app-api-peach-gamma.vercel.app)**
+- **[ Live Web Application (Frontend)](https://week-5-capstone-project-1.vercel.app/)**
+- **[ Hosted API Server (Backend)](https://blog-app-api-peach-gamma.vercel.app)**
 
 ---
 
-## ✨ Features List
+## Features List
 
 - **Core Functionality:**
-  - Secure User Authentication and Authorization using JWT and Cookies.
-  - Role-Based Access Control (RBAC):
-    - **User**: Read articles, filter by category, add comments.
-    - **Author**: Create, edit, deactivate/activate, and manage their own articles.
-    - **Admin**: Moderate content and manage user/author accounts.
-  - Full CRUD operations for articles with categories.
+ - Secure User Authentication and Authorization using JWT and Cookies.
+ - Role-Based Access Control (RBAC):
+ - **User**: Read articles, filter by category, add comments.
+ - **Author**: Create, edit, deactivate/activate, and manage their own articles.
+ - **Admin**: Moderate content and manage user/author accounts.
+ - Full CRUD operations for articles with categories.
 - **Advanced Implementations:**
-  - Image uploading and cloud storage via Cloudinary.
-  - Clean and responsive UI using Tailwind CSS with glassmorphism touches.
-  - Custom modals and error boundaries for a premium user experience.
+ - Image uploading and cloud storage via Cloudinary.
+ - Clean and responsive UI using Tailwind CSS with glassmorphism touches.
+ - Custom modals and error boundaries for a premium user experience.
 
 ---
 
-## 🖼️ Project Screenshots (The Visual Gallery)
+## Project Screenshots (The Visual Gallery)
 
 - **Login Page:** ![Login Page](docs/assets/login-page.png)
 - **Global Articles Feed:** ![Global Feed](docs/assets/global-articles.png)
@@ -56,7 +56,7 @@
 
 ---
 
-## 💻 Tech Stack & Ecosystem
+## Tech Stack & Ecosystem
 
 | Category | Technology | Primary Purpose |
 | :--- | :--- | :--- |
@@ -70,7 +70,7 @@
 
 ---
 
-## 🚀 Local Setup (The 5-Minute Guide)
+## Local Setup (The 5-Minute Guide)
 
 **System Prerequisites:** Node.js v18+, Git, npm.
 
@@ -84,28 +84,28 @@ cd Week-5-Capstone_Project_1
 1. Navigate to the backend directory: `cd BLOG-APP-BACKEND`
 2. Install dependencies: `npm install`
 3. Create a `.env` file and add:
-   ```env
-   PORT=4000
-   DB_URL=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   ```
+ ```env
+ PORT=4000
+ DB_URL=your_mongodb_connection_string
+ JWT_SECRET=your_jwt_secret
+ CLOUDINARY_CLOUD_NAME=your_cloud_name
+ CLOUDINARY_API_KEY=your_cloudinary_api_key
+ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+ ```
 4. Start the server: `npm run dev`
 
 **Frontend Local Boot:**
 1. Navigate to the frontend directory: `cd ../BLOG-APP-FRONTEND`
 2. Install dependencies: `npm install`
 3. Create a `.env` file and add:
-   ```env
-   VITE_API_URL=http://localhost:4000
-   ```
+ ```env
+ VITE_API_URL=http://localhost:4000
+ ```
 4. Start the development server: `npm run dev`
 
 ---
 
-## ☁️ Cloud Production Guide (Deployment)
+## Cloud Production Guide (Deployment)
 
 ### Hosting Destinations
 - **Frontend (UI):** Vercel
@@ -126,10 +126,10 @@ cd Week-5-Capstone_Project_1
 
 ---
 
-## 👤 Author Information
+## Author Information
 
-**K Phani Karthik**  
-Full-Stack Developer  
+**K Phani Karthik** 
+Full-Stack Developer 
 [GitHub Profile](https://github.com/Phanikarthik919)
 
 *For detailed client and server architecture documentation, please see the `README.md` files in the respective `BLOG-APP-FRONTEND` and `BLOG-APP-BACKEND` directories.*
