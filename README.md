@@ -47,12 +47,12 @@
 
 ## 🖼️ Project Screenshots (The Visual Gallery)
 
-*(Add your screenshot files to a docs/assets directory and update the links below)*
-
-- **Desktop Home View:** `![Home Page](docs/assets/home.png)`
-- **Core Application Dashboard:** `![Author Dashboard](docs/assets/author-dashboard.png)`
-- **Security Access Screens:** `![Login & Register](docs/assets/login.png)`
-- **Mobile Showcase:** `![Mobile View](docs/assets/mobile.png)`
+- **Login Page:** ![Login Page](BLOG-APP-FRONTEND/docs/assets/login-page.png)
+- **Global Articles Feed:** ![Global Feed](BLOG-APP-FRONTEND/docs/assets/global-articles.png)
+- **User Dashboard:** ![User Dashboard](BLOG-APP-FRONTEND/docs/assets/User-dashboard.png)
+- **Author Dashboard:** ![Author Dashboard](BLOG-APP-FRONTEND/docs/assets/author-dashboard.png)
+- **New Article Editor:** ![New Article](BLOG-APP-FRONTEND/docs/assets/new-article.png)
+- **Article & Comments View:** ![Comments View](BLOG-APP-FRONTEND/docs/assets/user-comments.png)
 
 ---
 
